@@ -1,0 +1,62 @@
+{% extends 'base.html' %} {% from '_components.html' import notice with context
+%} {% block title %}Scraped picks | MovieHub{% endblock %} {% block content %}
+<main id="main-content" class="page-shell">
+  <section class="page-intro">
+    <p class="eyebrow">Wikipedia + TMDB</p>
+    <h1>Scraped movie picks</h1>
+    <p>
+      These listings were retrieved from Wikipedia with BeautifulSoup, then
+      enriched with matching TMDB metadata where available.
+    </p>
+  </section>
+  {% if error %}{{ notice(error) }}{% endif %}
+  <section class="scraped-grid">
+    {% for movie in movies %}
+    <article class="scraped-card">
+      {% if movie.poster_path %}<img
+        src="{{ image_url(movie.poster_path) }}"
+        alt="{{ movie.title }} poster"
+        loading="lazy"
+      />{% endif %}
+      <div>
+        <p class="eyebrow">Wikipedia listing</p>
+        <h2>{{ movie.title }}</h2>
+        {% if movie.rating is defined %}
+        <p class="rating">★ {{ '%.1f'|format(movie.rating) }} on TMDB</p>
+        {% endif %}
+        <dl class="scraped-details">
+          <dt>Director</dt>
+          <dd>{{ movie.director or 'Not listed' }}</dd>
+          <dt>Distributor</dt>
+          <dd>{{ movie.distributor or 'Not listed' }}</dd>
+          <dt>Cast</dt>
+          <dd>{{ movie.cast or 'Not listed' }}</dd>
+        </dl>
+        {% if movie.overview %}
+        <p>{{ movie.overview }}</p>
+        {% endif %}
+        <div class="button-row">
+          {% if movie.wikipedia_url %}<a
+            class="button button-secondary"
+            href="{{ movie.wikipedia_url }}"
+            target="_blank"
+            rel="noopener"
+            >Wikipedia ↗</a
+          >{% endif %}{% if movie.tmdb_id %}<a
+            class="button button-primary"
+            href="{{ url_for('movie_details', movie_id=movie.tmdb_id) }}"
+            >Movie details</a
+          >{% endif %}
+        </div>
+      </div>
+    </article>
+    {% else %}
+    <div class="empty-state">
+      <span>⌕</span>
+      <h2>No scraped movies available</h2>
+      <p>Wikipedia may be temporarily unavailable.</p>
+    </div>
+    {% endfor %}
+  </section>
+</main>
+{% endblock %}

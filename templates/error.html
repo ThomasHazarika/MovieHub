@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% block title %}{{ title }} | MovieHub{% endblock %}{%
+block content %}
+<main id="main-content" class="empty-state page-shell">
+  <span aria-hidden="true">!</span>
+  <h1>{{ title }}</h1>
+  <p>{{ message }}</p>
+  <a class="button button-primary" href="{{ url_for('home') }}">Return home</a>
+</main>
+{% endblock %}

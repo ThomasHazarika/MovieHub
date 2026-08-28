@@ -1,0 +1,83 @@
+{% extends 'base.html' %} {% from '_components.html' import movie_card, notice
+with context %} {% block title %}{{ movie.title if movie else 'Movie
+unavailable' }} | MovieHub{% endblock %} {% block content %}
+<main id="main-content">
+  {% if error %}{{ notice(error) }}{% endif %}{% if movie %}
+  <section class="movie-hero">
+    <img
+      class="movie-hero__backdrop"
+      src="{{ image_url(movie.backdrop_path, 'original') }}"
+      alt=""
+    />
+    <div class="movie-hero__shade"></div>
+    <div class="movie-details">
+      <img
+        class="movie-details__poster"
+        src="{{ image_url(movie.poster_path) }}"
+        alt="{{ movie.title }} poster"
+      />
+      <div class="movie-details__content">
+        <a class="back-link" href="{{ url_for('movies') }}">← Back to movies</a>
+        <p class="eyebrow">
+          {{ movie.genres[0].name if movie.genres else 'Movie' }}
+        </p>
+        <h1>{{ movie.title }}</h1>
+        <div class="detail-facts">
+          <span class="rating"
+            >★ {{ '%.1f'|format(movie.vote_average|default(0)) }}</span
+          ><span>{{ movie.release_date or 'Release date unavailable' }}</span
+          ><span
+            >{{ movie.runtime ~ ' min' if movie.runtime else 'Runtime
+            unavailable' }}</span
+          >
+        </div>
+        <div class="genre-list">
+          {% for genre in movie.genres %}<span>{{ genre.name }}</span>{% endfor
+          %}
+        </div>
+        <p class="overview">
+          {{ movie.overview or 'No overview is available for this movie.' }}
+        </p>
+        <dl class="credits">
+          <div>
+            <dt>Director</dt>
+            <dd>{{ director or 'Not available' }}</dd>
+          </div>
+          <div>
+            <dt>Cast</dt>
+            <dd>
+              {% for actor in credits.cast[:6] %}{{ actor.name }}{% if not
+              loop.last %}, {% endif %}{% else %}Not available{% endfor %}
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+  <section class="content-section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">You may also like</p>
+        <h2>Similar movies</h2>
+      </div>
+    </div>
+    <div class="movie-grid">
+      {% for similar in similar_movies %}{{ movie_card(similar) }}{% else %}
+      <p class="section-message">No similar movies are available right now.</p>
+      {% endfor %}
+    </div>
+  </section>
+  {% else %}
+  <section class="empty-state page-shell">
+    <span>!</span>
+    <h1>Movie unavailable</h1>
+    <p>
+      The movie could not be found or movie data is temporarily unavailable.
+    </p>
+    <a class="button button-primary" href="{{ url_for('movies') }}"
+      >Browse movies</a
+    >
+  </section>
+  {% endif %}
+</main>
+{% endblock %}

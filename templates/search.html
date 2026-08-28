@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% from '_components.html' import movie_card, notice with context %}
+{% block title %}{{ page_title }} | MovieHub{% endblock %}
+{% block content %}
+<main id="main-content" class="page-shell">
+  <section class="page-intro"><p class="eyebrow">Find your next watch</p><h1>{{ page_title }}</h1><p>Search TMDB's movie and television catalogue. If no match is available, MovieHub checks Wikipedia.</p></section>
+  <section class="search-panel"><form class="large-search" action="{{ url_for('search') }}" method="get"><label class="sr-only" for="search-query">Search movies or shows</label><input id="search-query" name="q" type="search" value="{{ query }}" placeholder="Search movies or shows" required maxlength="100"><button class="button button-primary" type="submit">Search</button></form></section>
+  {% if error %}{{ notice(error) }}{% endif %}
+  <section class="results-section"><div class="section-heading"><h2>{% if query %}Results for “{{ query }}”{% else %}{{ page_title }}{% endif %}</h2><p class="result-count">{{ movies|length + (1 if wikipedia_result else 0) }} {{ 'result' if movies|length + (1 if wikipedia_result else 0) == 1 else 'results' }} found</p></div>
+  {% if message %}<div class="empty-state"><span>⌕</span><h2>Search MovieHub</h2><p>{{ message }}</p></div>
+  {% elif movies or wikipedia_result %}<div class="movie-grid">{% for movie in movies %}{{ movie_card(movie) }}{% endfor %}{% if wikipedia_result %}{{ movie_card(wikipedia_result) }}{% endif %}</div>
+  {% else %}<div class="empty-state"><span>⌕</span><h2>No information found</h2><p>We searched TMDB and Wikipedia but could not find this title.</p><a class="button button-secondary" href="{{ url_for('movies') }}">Browse popular movies</a></div>{% endif %}</section>
+</main>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %} {% from '_components.html' import movie_card, notice
+with context %} {% block title %}MovieHub | Discover great movies{% endblock %}
+{% block content %}
+<main id="main-content">
+  {% if error %}{{ notice(error) }}{% endif %}{% if hero_movie %}
+  <section class="hero" aria-label="Featured movie">
+    <img
+      class="hero__image"
+      src="{{ image_url(hero_movie.backdrop_path, 'original') }}"
+      alt=""
+    />
+    <div class="hero__shade"></div>
+    <div class="hero__content">
+      <p class="eyebrow">Featured film</p>
+      <h1>{{ hero_movie.title }}</h1>
+      <div class="hero__facts">
+        <span class="rating"
+          >★ {{ '%.1f'|format(hero_movie.vote_average|default(0)) }}</span
+        ><span>{{ hero_movie|year }}</span
+        ><span
+          >{{ hero_movie.genre_names|join(' · ') if hero_movie.genre_names else
+          'Discover now' }}</span
+        >
+      </div>
+      <p>
+        {{ hero_movie.overview or 'Discover this featured film on MovieHub.' }}
+      </p>
+      <div class="button-row">
+        <a
+          class="button button-primary"
+          href="{{ url_for('movie_details', movie_id=hero_movie.id) }}"
+          >View details</a
+        ><a class="button button-secondary" href="{{ url_for('movies') }}"
+          >Explore movies</a
+        >
+      </div>
+    </div>
+  </section>
+  {% else %}
+  <section class="hero hero--empty">
+    <div class="hero__content">
+      <p class="eyebrow">Movie discovery</p>
+      <h1>Your next great watch awaits.</h1>
+      <a class="button button-primary" href="{{ url_for('movies') }}"
+        >Explore movies</a
+      >
+    </div>
+  </section>
+  {% endif %}
+  <section class="content-section" aria-labelledby="popular-heading">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Hand-picked for you</p>
+        <h2 id="popular-heading">Popular movies</h2>
+      </div>
+      <a class="text-link" href="{{ url_for('movies') }}">See all →</a>
+    </div>
+    <div class="movie-grid">
+      {% for movie in popular_movies %}{{ movie_card(movie) }}{% else %}
+      <p class="section-message">Movies are not available right now.</p>
+      {% endfor %}
+    </div>
+  </section>
+  <section
+    class="content-section section-muted"
+    aria-labelledby="trending-heading"
+  >
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Everyone is watching</p>
+        <h2 id="trending-heading">Trending now</h2>
+      </div>
+      <a class="text-link" href="{{ url_for('movies') }}">Browse movies →</a>
+    </div>
+    <div class="movie-grid">
+      {% for movie in trending_movies %}{{ movie_card(movie) }}{% else %}
+      <p class="section-message">
+        Trending movies are not available right now.
+      </p>
+      {% endfor %}
+    </div>
+  </section>
+</main>
+{% endblock %}
