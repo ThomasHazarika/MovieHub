@@ -25,13 +25,14 @@
         <p class="rating">★ {{ '%.1f'|format(movie.rating) }} on TMDB</p>
         {% endif %}
         <dl class="scraped-details">
-          <dt>Director</dt>
-          <dd>{{ movie.director or 'Not listed' }}</dd>
-          <dt>Distributor</dt>
-          <dd>{{ movie.distributor or 'Not listed' }}</dd>
-          <dt>Cast</dt>
-          <dd>{{ movie.cast or 'Not listed' }}</dd>
+          <dt><b>Director:</b></dt>
+          <dd>{{ movie.director or 'Not Available' }}</dd><br>
+          <dt><b>Distributor:</b></dt>
+          <dd>{{ movie.distributor or 'Not Available' }}</dd><br>
+          <dt><b>Cast:</b></dt>
+          <dd>{{ movie.cast or 'Not Available' }}</dd><br>
         </dl>
+        <dt><b>Overview:</b></dt>
         {% if movie.overview %}
         <p>{{ movie.overview }}</p>
         {% endif %}
@@ -48,7 +49,7 @@
             >Movie details</a
           >{% endif %}
         </div>
-      </div>
+      </div><br><br>
     </article>
     {% else %}
     <div class="empty-state">
