@@ -1,6 +1,4 @@
-"""Flask entry point for the MovieHub student project."""
 from functools import lru_cache
-
 from flask import Flask, render_template, request
 import requests
 import tmdb
@@ -11,7 +9,6 @@ app = Flask(__name__)
 
 
 def image_url(path, size="w500"):
-    """Build one safe TMDB image URL for every template."""
     if not path:
         return "https://placehold.co/500x750/171925/e9ecff?text=MovieHub"
     return path if path.startswith(("http://", "https://")) else f"https://image.tmdb.org/t/p/{size}{path}"
@@ -47,7 +44,6 @@ def add_genre_names(movies):
 
 
 def normalise_shows(shows):
-    """Give TMDB TV results the card fields shared with movies."""
     for show in shows:
         show["title"] = show.get("name", "Untitled show")
         show["release_date"] = show.get("first_air_date", "")
