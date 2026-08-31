@@ -1,70 +1,27 @@
-{% macro movie_card(movie) -%} {% if movie.media_type == 'wikipedia' %}{% set
-details = movie.wikipedia_url %}{% elif movie.media_type == 'tv' %}{% set
-details = url_for('show_details', show_id=movie.id) %}{% else %}{% set details =
-url_for('movie_details', movie_id=movie.id) %}{% endif %}
-<article class="movie-card">
-  <a
-    class="poster-link"
-    href="{{ details }}"
-    {%
-    if
-    movie.media_type=""
-    ="wikipedia"
-    %}
-    target="_blank"
-    rel="noopener"
-    {%
-    endif
-    %}
-    aria-label="View details for {{ movie.title }}"
-    ><img
-      src="{{ image_url(movie.poster_path) }}"
-      alt="{{ movie.title }} poster"
-      loading="lazy"
-    />{% if movie.vote_average is not none %}<span class="rating-badge"
-      >★ {{ '%.1f'|format(movie.vote_average|default(0)) }}</span
-    >{% endif %}</a
-  >
-  <div class="movie-card__body">
-    <p class="movie-card__meta">
-      {{ movie|year }} <span>•</span> {{ movie.genre_names[0] if
-      movie.genre_names else ('TV show' if movie.media_type == 'tv' else
-      'Movie') }}
-    </p>
-    <h3>
-      <a
-        href="{{ details }}"
-        {%
-        if
-        movie.media_type=""
-        ="wikipedia"
-        %}
-        target="_blank"
-        rel="noopener"
-        {%
-        endif
-        %}
-        >{{ movie.title }}</a
-      >
-    </h3>
-    <a
-      class="card-link"
-      href="{{ details }}"
-      {%
-      if
-      movie.media_type=""
-      ="wikipedia"
-      %}
-      target="_blank"
-      rel="noopener"
-      {%
-      endif
-      %}
-      >{% if movie.media_type == 'wikipedia' %}Read on Wikipedia ↗{% else %}View
-      details <span aria-hidden="true">→</span>{% endif %}</a
-    >
-  </div>
-</article>
-{%- endmacro %} {% macro notice(message, kind='error') -%}
-<div class="notice notice--{{ kind }}" role="status">{{ message }}</div>
+{% macro movie_card(movie) -%}
+  {% if movie.media_type == 'wikipedia' %}
+    {% set details = movie.wikipedia_url %}
+    {% set link_text = 'Read on Wikipedia ↗' %}
+  {% elif movie.media_type == 'tv' %}
+    {% set details = url_for('show_details', show_id=movie.id) %}
+    {% set link_text = 'View details →' %}
+  {% else %}
+    {% set details = url_for('movie_details', movie_id=movie.id) %}
+    {% set link_text = 'View details →' %}
+  {% endif %}
+  <article class="movie-card">
+    <a class="poster-link" href="{{ details }}" aria-label="View details for {{ movie.title }}">
+      <img src="{{ image_url(movie.poster_path) }}" alt="{{ movie.title }} poster" loading="lazy">
+      {% if movie.vote_average is not none %}<span class="rating-badge">★ {{ '%.1f'|format(movie.vote_average|default(0)) }}</span>{% endif %}
+    </a>
+    <div class="movie-card__body">
+      <p class="movie-card__meta">{{ movie|year }} <span>•</span> {{ movie.genre_names[0] if movie.genre_names else ('TV show' if movie.media_type == 'tv' else 'Movie') }}</p>
+      <h3><a href="{{ details }}">{{ movie.title }}</a></h3>
+      <a class="card-link" href="{{ details }}">{{ link_text }}</a>
+    </div>
+  </article>
+{%- endmacro %}
+
+{% macro notice(message, kind='error') -%}
+  <div class="notice notice--{{ kind }}" role="status">{{ message }}</div>
 {%- endmacro %}

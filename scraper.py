@@ -65,8 +65,4 @@ def scrape_wikipedia_title(title):
         page_title = result.get_text(" ", strip=True)
     overview = next((paragraph.get_text(" ", strip=True) for paragraph in page_soup.select("#mw-content-text > .mw-parser-output > p") if paragraph.get_text(" ", strip=True)), "")
     fields = {row.find("th").get_text(" ", strip=True).lower(): row.find("td").get_text(" ", strip=True) for row in page_soup.select("table.infobox tr") if row.find("th") and row.find("td")}
-    poster = page_soup.select_one("table.infobox img")
-    poster_url = poster.get("src") if poster else None
-    if poster_url and poster_url.startswith("//"):
-        poster_url = f"https:{poster_url}"
-    return {"title": page_title, "wikipedia_url": page_url, "overview": overview, "director": fields.get("directed by"), "cast": fields.get("starring"), "poster_url": poster_url}
+    return {"title": page_title, "wikipedia_url": page_url, "overview": overview, "director": fields.get("directed by"), "cast": fields.get("starring")}

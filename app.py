@@ -9,9 +9,7 @@ app = Flask(__name__)
 
 
 def image_url(path, size="w500"):
-    if not path:
-        return "https://placehold.co/500x750/171925/e9ecff?text=MovieHub"
-    return path if path.startswith(("http://", "https://")) else f"https://image.tmdb.org/t/p/{size}{path}"
+    return f"https://image.tmdb.org/t/p/{size}{path}" if path else "https://placehold.co/500x750/171925/e9ecff?text=MovieHub"
 
 
 @app.template_filter("year")
@@ -91,7 +89,9 @@ def search():
     show_data, show_error = tmdb_results(lambda: tmdb.search_tv_shows(query), {"results": []})
     results = add_genre_names(movie_data.get("results", [])) + normalise_shows(show_data.get("results", []))
     fallback = None
-    if not results and not (movie_error or show_error):
+    # Wikipedia is the fallback whenever TMDB yields no usable result,
+    # including temporary TMDB failures.
+    if not results:
         try:
             fallback = scrape_wikipedia_title(query)
         except requests.RequestException:
@@ -99,7 +99,7 @@ def search():
     if fallback:
         fallback.update({
             "media_type": "wikipedia",
-            "poster_path": fallback.get("poster_url"),
+            "poster_path": None,
             "vote_average": None,
             "genre_names": ["Wikipedia"],
             "release_date": "",
